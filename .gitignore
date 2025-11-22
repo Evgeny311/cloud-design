@@ -1,0 +1,49 @@
+cat > .gitignore << 'EOF'
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfvars
+*.tfvars
+!terraform.tfvars.example
+
+# AWS
+.aws/
+*.pem
+
+# Environment variables
+.env
+.env.local
+
+# Secrets
+secrets/
+*.key
+*.crt
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.tar
+
+# Kubernetes
+kubeconfig*
+!kubeconfig.example
+
+# Python
+__pycache__/
+*.pyc
+venv/
+EOF
