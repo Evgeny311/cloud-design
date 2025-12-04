@@ -1,0 +1,86 @@
+# ======
+# Production Environment - Example Variables
+# ======
+# Production-grade settings with higher availability
+# ======
+
+# General Configuration
+project_name = "cloud-design"
+environment  = "prod"
+region       = "eu-north-1"
+owner        = "Your Name"
+
+# VPC Configuration (different CIDR from dev)
+vpc_cidr = "10.1.0.0/16"
+
+# SSH Key Configuration
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC... your-prod-public-key-here"
+
+# S3 Configuration (longer retention for production)
+logs_retention_days    = 30
+backups_retention_days = 90
+
+# ECR Configuration (stricter for production)
+ecr_image_tag_mutability  = "IMMUTABLE"  # Prevent tag overwrites
+ecr_scan_on_push          = true
+ecr_max_image_count       = 20           # Keep more images
+ecr_untagged_retention_days = 3          # Clean faster
+
+# RDS Configuration (Production grade)
+rds_instance_class          = "db.t3.small"      # Better than micro
+rds_postgres_version        = "15.4"
+rds_allocated_storage       = 50                 # More storage
+rds_storage_type            = "gp3"
+rds_master_username         = "postgres"
+rds_inventory_db_name       = "inventory"
+rds_billing_db_name         = "billing"
+rds_inventory_db_username   = "inventory_user"
+rds_billing_db_username     = "billing_user"
+rds_backup_retention_period = 30                 # 30 days backup
+rds_backup_window           = "03:00-04:00"
+rds_maintenance_window      = "mon:04:00-mon:05:00"
+rds_skip_final_snapshot     = false              # IMPORTANT: Keep final snapshot
+rds_multi_az                = true               # High availability
+rds_enable_cloudwatch_logs  = true
+rds_enable_cloudwatch_alarms = true
+rds_deletion_protection     = true               # Prevent accidental deletion
+
+# K3s Configuration (Production grade)
+k3s_master_instance_type = "t3.large"   # More resources
+k3s_worker_instance_type = "t3.medium"  # More resources
+k3s_worker_node_count    = 3            # More workers
+k3s_version              = "v1.28.5+k3s1"
+k3s_cluster_token        = "your-prod-super-secret-token"  # DIFFERENT from dev!
+k3s_use_elastic_ip       = true         # Static IP for production
+
+# ALB Configuration (Production grade)
+alb_enable_deletion_protection = true   # Prevent accidental deletion
+alb_enable_cloudwatch_alarms   = true
+alb_acm_certificate_arn        = "arn:aws:acm:region:account:certificate/..."  # Add HTTPS cert
+
+# Monitoring Configuration (Production grade)
+monitoring_log_retention_days = 30      # Keep logs longer
+monitoring_enable_rds_logs    = true
+monitoring_enable_alarms      = true
+monitoring_enable_sns_alerts  = true    # Enable email alerts
+monitoring_alert_email        = "your-email@example.com"
+
+# =======
+# PRODUCTION NOTES:
+# =======
+# 1. Use different SSH keys for prod and dev
+# 2. Use different cluster tokens
+# 3. Enable all protections (deletion, multi-az)
+# 4. Use HTTPS (ACM certificate)
+# 5. Enable email alerts
+# 6. Regularly review CloudWatch dashboards
+# 7. Test backups and disaster recovery
+# 8. Monitor costs closely
+#
+# Estimated Production Cost:
+# - 1x t3.large (master): ~$60/month
+# - 3x t3.medium (workers): ~$30/month each
+# - RDS db.t3.small (Multi-AZ): ~$45/month
+# - ALB: ~$22/month
+# - Total: ~$217/month
+# ======

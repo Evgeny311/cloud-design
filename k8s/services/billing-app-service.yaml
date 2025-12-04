@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: billing-app-service
+  namespace: microservices
+  labels:
+    app: billing-app
+    project: cloud-design
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30002
+    protocol: TCP
+    name: http
+  selector:
+    app: billing-app

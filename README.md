@@ -95,6 +95,16 @@ terraform apply
 ```bash
 ./scripts/test-endpoints.sh
 ```
+### Testing Changes
+
+```bash
+# Update code in ../play-with-containers/srcs/
+
+# Rebuild and redeploy
+./scripts/build-and-push-images.sh dev v1.0.1
+./scripts/deploy-applications.sh dev v1.0.1
+```
+
 
 ---
 
@@ -126,7 +136,32 @@ terraform apply
 
 ## Development
 
-[To be filled]
+### Local Development
+
+bash
+# 1. Clone repository
+git clone <your-repo>
+cd cloud-design
+
+# 2. Setup AWS
+./scripts/setup-aws.sh
+
+# 3. Configure Terraform
+cd terraform/environments/dev
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars
+
+# 4. Deploy infrastructure
+terraform init -backend-config=backend.hcl
+terraform apply
+
+# 5. Build and deploy applications
+cd ../../..
+./scripts/build-and-push-images.sh dev v1.0.0
+./scripts/deploy-applications.sh dev v1.0.0
+
+# 6. Test
+./scripts/test-endpoints.sh dev
 
 ---
 

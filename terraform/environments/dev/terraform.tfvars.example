@@ -1,0 +1,96 @@
+# ======
+# Development Environment - Example Variables
+# ======
+# Copy this file to terraform.tfvars and fill in your values
+# cp terraform.tfvars.example terraform.tfvars
+# ======
+
+# General Configuration
+project_name = "cloud-design"
+environment  = "dev"
+region       = "eu-north-1"  # Stockholm (usually cheaper)
+owner        = "Your Name"
+
+# VPC Configuration
+vpc_cidr = "10.0.0.0/16"
+
+# SSH Key Configuration
+# Generate with: ssh-keygen -t rsa -b 4096 -f ~/.ssh/cloud-design-dev -C "cloud-design-dev"
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC... your-public-key-here"
+
+# S3 Configuration
+logs_retention_days    = 7   # Free Tier friendly
+backups_retention_days = 30
+
+# ECR Configuration
+ecr_image_tag_mutability  = "MUTABLE"
+ecr_scan_on_push          = true
+ecr_max_image_count       = 10
+ecr_untagged_retention_days = 7
+
+# RDS Configuration (Free Tier)
+rds_instance_class          = "db.t3.micro"   # Free Tier eligible
+rds_postgres_version        = "15.4"
+rds_allocated_storage       = 20              # Free Tier limit
+rds_storage_type            = "gp3"
+rds_master_username         = "postgres"
+rds_inventory_db_name       = "inventory"
+rds_billing_db_name         = "billing"
+rds_inventory_db_username   = "inventory_user"
+rds_billing_db_username     = "billing_user"
+rds_backup_retention_period = 7
+rds_backup_window           = "03:00-04:00"
+rds_maintenance_window      = "mon:04:00-mon:05:00"
+rds_skip_final_snapshot     = true            # Set false for production
+rds_multi_az                = false           # Disable for Free Tier
+rds_enable_cloudwatch_logs  = false           # Disable for Free Tier
+rds_enable_cloudwatch_alarms = true
+rds_deletion_protection     = false           # Set true for production
+
+# K3s Configuration (Free Tier)
+k3s_master_instance_type = "t3.medium"  # ~400h/month in Free Tier
+k3s_worker_instance_type = "t3.small"   # ~750h/month in Free Tier
+k3s_worker_node_count    = 2
+k3s_version              = "v1.28.5+k3s1"
+k3s_cluster_token        = "your-super-secret-token-change-this"  # CHANGE THIS!
+k3s_use_elastic_ip       = false  # Set true if you need static IP
+
+# ALB Configuration
+alb_enable_deletion_protection = false  # Set true for production
+alb_enable_cloudwatch_alarms   = true
+alb_acm_certificate_arn        = ""     # Add ACM cert ARN for HTTPS
+
+# Monitoring Configuration
+monitoring_log_retention_days = 7     # Free Tier friendly
+monitoring_enable_rds_logs    = true
+monitoring_enable_alarms      = true
+monitoring_enable_sns_alerts  = false  # Set true to enable email alerts
+monitoring_alert_email        = ""     # Add your email for alerts
+
+# ======
+# IMPORTANT NOTES:
+# ======
+# 1. Generate SSH key pair before running terraform:
+#    ssh-keygen -t rsa -b 4096 -f ~/.ssh/cloud-design-dev
+#
+# 2. Change k3s_cluster_token to a secure random string:
+#    openssl rand -base64 32
+#
+# 3. Free Tier limits:
+#    - EC2: 750 hours/month (t2.micro or t3.micro)
+#    - RDS: 750 hours/month (db.t2.micro or db.t3.micro), 20GB storage
+#    - ALB: 750 hours/month
+#    - S3: 5GB storage
+#
+# 4. Estimated monthly cost after Free Tier:
+#    - t3.medium (master): ~$30/month
+#    - 2x t3.small (workers): ~$15/month each
+#    - RDS db.t3.micro: ~$15/month
+#    - ALB: ~$22/month
+#    - Total: ~$97/month
+#
+# 5. For learning/testing:
+#    - Deploy only when needed
+#    - Destroy after testing: terraform destroy
+#    - Set up billing alerts in AWS Console
+# =======
