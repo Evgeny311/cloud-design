@@ -82,6 +82,7 @@ fi
 # Install K3s Worker (Agent)
 echo "Installing K3s Worker..."
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$K3S_VERSION" \
+    INSTALL_K3S_SKIP_SELINUX_RPM=true \
     K3S_URL="https://$MASTER_IP:6443" \
     K3S_TOKEN="$K3S_TOKEN" \
     sh -s - agent \

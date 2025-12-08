@@ -18,7 +18,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install dependencies
-COPY play-with-containers/srcs/billing-app/requirements.txt .
+COPY services/billing-app/requirements.txt .
 RUN pip install --user --no-cache-dir -r requirements.txt
 
 # Runtime stage
@@ -32,20 +32,24 @@ RUN apt-get update && \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy dependencies from builder
-COPY --from=builder /root/.local /root/.local
+# Create non-root user first
+RUN useradd -m -u 1000 appuser
+
+# Copy dependencies from builder to appuser's home
+COPY --from=builder /root/.local /home/appuser/.local
 
 # Copy application code
-COPY play-with-containers/srcs/billing-app/ .
+COPY services/billing-app/ .
 
-# Make sure scripts are executable
-ENV PATH=/root/.local/bin:$PATH
+# Set ownership
+RUN chown -R appuser:appuser /app && \
+    chown -R appuser:appuser /home/appuser/.local
 
-# Create non-root user
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
-
+# Switch to non-root user
 USER appuser
+
+# Add local bin to PATH
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 # Expose port
 EXPOSE 8080

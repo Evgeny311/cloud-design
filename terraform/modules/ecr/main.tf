@@ -29,7 +29,7 @@ resource "aws_ecr_repository" "api_gateway" {
 
 # ECR Repository for Inventory App
 resource "aws_ecr_repository" "inventory_app" {
-  name                 = "${var.project_name}/${var.environment}/inventory-app"
+  name                 = "${var.project_name}/${var.environment}/inventory"
   image_tag_mutability = var.image_tag_mutability
 
   image_scanning_configuration {
@@ -43,8 +43,8 @@ resource "aws_ecr_repository" "inventory_app" {
   tags = merge(
     var.tags,
     {
-      Name        = "${var.project_name}-${var.environment}-inventory-app"
-      Service     = "inventory-app"
+      Name        = "${var.project_name}-${var.environment}-inventory"
+      Service     = "inventory"
       Environment = var.environment
     }
   )
@@ -52,7 +52,7 @@ resource "aws_ecr_repository" "inventory_app" {
 
 # ECR Repository for Billing App
 resource "aws_ecr_repository" "billing_app" {
-  name                 = "${var.project_name}/${var.environment}/billing-app"
+  name                 = "${var.project_name}/${var.environment}/billing"
   image_tag_mutability = var.image_tag_mutability
 
   image_scanning_configuration {
@@ -66,8 +66,8 @@ resource "aws_ecr_repository" "billing_app" {
   tags = merge(
     var.tags,
     {
-      Name        = "${var.project_name}-${var.environment}-billing-app"
-      Service     = "billing-app"
+      Name        = "${var.project_name}-${var.environment}-billing"
+      Service     = "billing"
       Environment = var.environment
     }
   )

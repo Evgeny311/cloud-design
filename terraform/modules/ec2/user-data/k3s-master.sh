@@ -71,7 +71,7 @@ echo "Private IP: $PRIVATE_IP"
 
 # Install K3s Master
 echo "Installing K3s Master..."
-curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$K3S_VERSION" sh -s - server \
+curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$K3S_VERSION" INSTALL_K3S_SKIP_SELINUX_RPM=true sh -s - server \
     --token="$K3S_TOKEN" \
     --node-ip="$PRIVATE_IP" \
     --advertise-address="$PRIVATE_IP" \

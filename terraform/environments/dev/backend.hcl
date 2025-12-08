@@ -5,7 +5,7 @@
 # ======
 
 # S3 bucket for storing Terraform state
-bucket = "cloud-design-dev-terraform-state-REPLACE_WITH_ACCOUNT_ID"
+bucket = "cloud-design-dev-terraform-state-711893265334"
 
 # Path to state file within the bucket
 key = "dev/terraform.tfstate"

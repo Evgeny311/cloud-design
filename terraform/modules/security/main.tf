@@ -64,7 +64,7 @@ resource "aws_security_group" "k3s_nodes" {
     from_port   = 6443
     to_port     = 6443
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
+    self        = true
   }
 
   # Kubelet API
@@ -73,7 +73,7 @@ resource "aws_security_group" "k3s_nodes" {
     from_port   = 10250
     to_port     = 10250
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
+    self        = true
   }
 
   # NodePort Services (30000-32767)
@@ -82,7 +82,7 @@ resource "aws_security_group" "k3s_nodes" {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
+    self        = true
   }
 
   # HTTP from ALB

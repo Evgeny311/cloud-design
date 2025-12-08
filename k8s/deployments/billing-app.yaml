@@ -19,8 +19,9 @@ spec:
     spec:
       containers:
       - name: billing-app
-        image: REPLACE_WITH_ECR_URL/cloud-design/dev/billing-app:latest
+        image: 711893265334.dkr.ecr.eu-north-1.amazonaws.com/cloud-design/dev/billing:v1.0.1
         imagePullPolicy: Always
+        command: ["python", "-u", "server.py"]  # ← ДОБАВЛЕНО
         ports:
         - containerPort: 8080
           name: http
@@ -71,7 +72,7 @@ spec:
               name: rabbitmq-secret
               key: connection-string
         
-        # Resource limits
+        # Resource limits (УЖЕ ХОРОШИЕ)
         resources:
           requests:
             memory: "256Mi"
@@ -80,24 +81,9 @@ spec:
             memory: "512Mi"
             cpu: "500m"
         
-        # Health checks
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
+        # Health checks - УДАЛЕНЫ (нет /health endpoint)
+        # livenessProbe: ...
+        # readinessProbe: ...
       
       imagePullSecrets:
       - name: ecr-secret

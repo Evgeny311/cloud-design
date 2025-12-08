@@ -122,7 +122,7 @@ for SERVICE in "${SERVICES[@]}"; do
     
     # Also push latest tag
     if [ "$IMAGE_TAG" != "latest" ]; then
-        docker push "${ECR_REGISTRY}/${IMAGE_NAME}:latest"
+        docker push "${ECR_REGISTRY}/${IMAGE_NAME}:latest" || true
     fi
     
     print_success "Pushed: $FULL_IMAGE"

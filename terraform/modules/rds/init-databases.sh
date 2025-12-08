@@ -45,10 +45,13 @@ print_info "Starting database initialization..."
 print_info "RDS Endpoint: $RDS_ENDPOINT"
 
 # Extract host and port from endpoint
-RDS_HOST=$(echo $RDS_ENDPOINT | cut -d':' -f1)
-RDS_PORT=$(echo $RDS_ENDPOINT | cut -d':' -f2)
-
-if [ -z "$RDS_PORT" ]; then
+if [[ $RDS_ENDPOINT == *":"* ]]; then
+    # Endpoint contains port
+    RDS_HOST=$(echo $RDS_ENDPOINT | cut -d':' -f1)
+    RDS_PORT=$(echo $RDS_ENDPOINT | cut -d':' -f2)
+else
+    # Endpoint without port, use default
+    RDS_HOST=$RDS_ENDPOINT
     RDS_PORT=5432
 fi
 

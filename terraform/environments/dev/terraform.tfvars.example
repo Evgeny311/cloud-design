@@ -19,8 +19,11 @@ vpc_cidr = "10.0.0.0/16"
 ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC... your-public-key-here"
 
 # S3 Configuration
-logs_retention_days    = 7   # Free Tier friendly
-backups_retention_days = 30
+logs_retention_days    = 120   # Free Tier friendly
+backups_retention_days = 120
+logs_transition_ia_days      = 14
+logs_transition_glacier_days = 60
+terraform_state_retention_days = 60
 
 # ECR Configuration
 ecr_image_tag_mutability  = "MUTABLE"
@@ -30,7 +33,7 @@ ecr_untagged_retention_days = 7
 
 # RDS Configuration (Free Tier)
 rds_instance_class          = "db.t3.micro"   # Free Tier eligible
-rds_postgres_version        = "15.4"
+rds_postgres_version        = "15"
 rds_allocated_storage       = 20              # Free Tier limit
 rds_storage_type            = "gp3"
 rds_master_username         = "postgres"
@@ -38,7 +41,7 @@ rds_inventory_db_name       = "inventory"
 rds_billing_db_name         = "billing"
 rds_inventory_db_username   = "inventory_user"
 rds_billing_db_username     = "billing_user"
-rds_backup_retention_period = 7
+rds_backup_retention_period = 1
 rds_backup_window           = "03:00-04:00"
 rds_maintenance_window      = "mon:04:00-mon:05:00"
 rds_skip_final_snapshot     = true            # Set false for production
@@ -48,8 +51,8 @@ rds_enable_cloudwatch_alarms = true
 rds_deletion_protection     = false           # Set true for production
 
 # K3s Configuration (Free Tier)
-k3s_master_instance_type = "t3.medium"  # ~400h/month in Free Tier
-k3s_worker_instance_type = "t3.small"   # ~750h/month in Free Tier
+k3s_master_instance_type = "t3.small"  # Free Tier
+k3s_worker_instance_type = "t3.micro"   # Free Tier
 k3s_worker_node_count    = 2
 k3s_version              = "v1.28.5+k3s1"
 k3s_cluster_token        = "your-super-secret-token-change-this"  # CHANGE THIS!
@@ -77,8 +80,8 @@ monitoring_alert_email        = ""     # Add your email for alerts
 #    openssl rand -base64 32
 #
 # 3. Free Tier limits:
-#    - EC2: 750 hours/month (t2.micro or t3.micro)
-#    - RDS: 750 hours/month (db.t2.micro or db.t3.micro), 20GB storage
+#    - EC2: 750 hours/month (t3.micro)
+#    - RDS: 750 hours/month (db.t3.micro), 20GB storage
 #    - ALB: 750 hours/month
 #    - S3: 5GB storage
 #

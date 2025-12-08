@@ -68,6 +68,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "terraform_state" {
     id     = "delete-old-versions"
     status = "Enabled"
 
+    filter {}
+
     noncurrent_version_expiration {
       noncurrent_days = 90
     }
@@ -129,6 +131,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs" {
     id     = "transition-old-logs"
     status = "Enabled"
 
+    filter {}
+    
     transition {
       days          = 30
       storage_class = "STANDARD_IA"
@@ -199,6 +203,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "backups" {
   rule {
     id     = "transition-old-backups"
     status = "Enabled"
+
+    filter {}
 
     transition {
       days          = 30
