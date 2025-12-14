@@ -77,7 +77,7 @@ This project demonstrates a complete cloud-native microservices deployment on AW
 ## 📁 Project Structure
 
 ```
-cloud-design/
+loud-design/
 ├── README.md                          # This file
 ├── docs/                              # Detailed documentation
 │   ├── architecture.md                # Architecture deep-dive
@@ -90,11 +90,13 @@ cloud-design/
 │   ├── modules/                       # Reusable Terraform modules
 │   │   ├── vpc/                       # VPC, subnets, internet gateway
 │   │   ├── ec2/                       # K3s cluster EC2 instances
+│   │   │   └── user-data/             # Cloud-init scripts for K3s setup
 │   │   ├── rds/                       # PostgreSQL RDS database
+│   │   │   └── init-databases.sh      # Database initialization script
 │   │   ├── alb/                       # Application Load Balancer
 │   │   ├── ecr/                       # Elastic Container Registry
-│   │   ├── s3/                        # S3 buckets (state, logs, backups)
-│   │   └── cloudwatch/                # Monitoring, logging, alarms
+│   │   ├── security/                  # Security groups & IAM roles
+│   │   └── s3/                        # S3 buckets (state, logs, backups)
 │   │
 │   └── environments/                  # Environment-specific configs
 │       ├── dev/                       # Development (Free Tier optimized)
@@ -104,13 +106,33 @@ cloud-design/
 │       │   └── terraform.tfvars.example
 │       └── prod/                      # Production (future)
 │
+├── docker/                            # Docker build contexts
+│   ├── api-gateway-app/Dockerfile     # API Gateway container
+│   ├── inventory-app/Dockerfile       # Inventory service container
+│   └── billing-app/Dockerfile         # Billing service container
+│
+├── services/                          # Application source code
+│   ├── api-gateway-app/               # API Gateway microservice
+│   │   ├── app/                       # Python application code
+│   │   ├── requirements.txt
+│   │   └── server.py
+│   ├── inventory-app/                 # Inventory microservice
+│   │   ├── app/                       # Python application code
+│   │   ├── requirements.txt
+│   │   └── server.py
+│   └── billing-app/                   # Billing microservice
+│       ├── app/                       # Python application code
+│       ├── requirements.txt
+│       └── server.py
+│
 ├── k8s/                               # Kubernetes manifests
-│   ├── namespace.yaml
-│   ├── configmaps/
-│   ├── secrets/
-│   ├── deployments/
-│   ├── services/
-│   └── hpa/                           # Horizontal Pod Autoscaling
+│   ├── namespaces/
+│   ├── configmaps/                    # Application configuration
+│   ├── secrets/                       # Database & RabbitMQ credentials
+│   ├── deployments/                   # Application deployments
+│   ├── services/                      # Kubernetes services (NodePort)
+│   ├── hpa/                           # Horizontal Pod Autoscaling
+│   └── ingress/                       # Ingress rules (future)
 │
 ├── scripts/                           # Automation scripts
 │   ├── setup-aws.sh                   # AWS prerequisites check
@@ -119,9 +141,7 @@ cloud-design/
 │   ├── test-endpoints.sh              # Test application endpoints
 │   └── cleanup.sh                     # Destroy all resources
 │
-└── monitoring/                        # Monitoring configurations
-    ├── dashboards/
-    └── alerts/
+└── Makefile                           # Common tasks automation
 ```
 
 ---

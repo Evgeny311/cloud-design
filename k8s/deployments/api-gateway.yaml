@@ -19,9 +19,9 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: 711893265334.dkr.ecr.eu-north-1.amazonaws.com/cloud-design/dev/api-gateway:v1.0.3
+        image: 711893265334.dkr.ecr.eu-north-1.amazonaws.com/cloud-design/dev/api-gateway:v1.1.0
         imagePullPolicy: Always
-        command: ["python", "-u", "server.py"]  # ← ДОБАВЛЕНО
+        command: ["python", "-u", "server.py"]
         ports:
         - containerPort: 3000
           name: http
@@ -32,11 +32,18 @@ spec:
         - configMapRef:
             name: api-gateway-config
         
-        # Resource limits (УВЕЛИЧЕНЫ)
+        # Resource limits
         resources:
           requests:
-            memory: "256Mi"  # ← Было 128Mi
+            memory: "256Mi"
             cpu: "100m"
           limits:
-            memory: "512Mi"  # ← Было 256Mi
-            cpu: "500m"      #
+            memory: "512Mi"
+            cpu: "500m"
+      
+      imagePullSecrets:
+      - name: ecr-secret
+      
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 1000

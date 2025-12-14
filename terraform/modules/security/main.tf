@@ -77,13 +77,13 @@ resource "aws_security_group" "k3s_nodes" {
   }
 
   # NodePort Services (30000-32767)
-  ingress {
-    description = "K3s NodePort Services"
-    from_port   = 30000
-    to_port     = 32767
-    protocol    = "tcp"
-    self        = true
-  }
+ingress {
+  description     = "NodePort Services from ALB"
+  from_port       = 30000
+  to_port         = 32767
+  protocol        = "tcp"
+  security_groups = [aws_security_group.alb.id]  # ← from ALB
+}
 
   # HTTP from ALB
   ingress {

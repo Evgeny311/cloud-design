@@ -8,6 +8,13 @@
 
 set -e
 
+# Ensure PostgreSQL 14+ is installed
+if ! command -v psql &> /dev/null || [[ $(psql --version | grep -oP '\d+' | head -1) -lt 10 ]]; then
+    echo "[INFO] Installing PostgreSQL 14 client..."
+    sudo amazon-linux-extras enable postgresql14 2>/dev/null || true
+    sudo yum install -y postgresql
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -112,16 +119,19 @@ PGPASSWORD=$INVENTORY_PASSWORD psql -h $RDS_HOST -p $RDS_PORT -U $INVENTORY_USER
 CREATE TABLE IF NOT EXISTS movies (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    director VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    stock INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insert sample data
-INSERT INTO movies (title, director) 
+INSERT INTO movies (title, description, price, stock) 
 VALUES 
-    ('The Shawshank Redemption', 'Frank Darabont'),
-    ('The Godfather', 'Francis Ford Coppola'),
-    ('The Dark Knight', 'Christopher Nolan')
+    ('The Shawshank Redemption', 'Two imprisoned men bond over a number of years...', 9.99, 10),
+    ('The Godfather', 'The aging patriarch of an organized crime dynasty...', 12.99, 5),
+    ('The Dark Knight', 'When the menace known as the Joker wreaks havoc...', 14.99, 8)
 ON CONFLICT DO NOTHING;
 EOF
 
@@ -133,17 +143,27 @@ CREATE TABLE IF NOT EXISTS orders (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     movie_id INTEGER NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
+    movie_title VARCHAR(255) NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    price DECIMAL(10, 2) NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
     status VARCHAR(50) DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create index on user_id for faster queries
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+
+-- Create index on status
+CREATE INDEX idx_orders_status ON orders(status);
+
 -- Insert sample data
-INSERT INTO orders (user_id, movie_id, price, status)
+INSERT INTO orders (user_id, movie_id, movie_title, quantity, price, total_amount, status)
 VALUES
-    (1, 1, 9.99, 'completed'),
-    (2, 2, 12.99, 'pending'),
-    (3, 3, 14.99, 'completed')
+    (1, 1, 'The Shawshank Redemption', 2, 9.99, 19.98, 'completed'),
+    (2, 2, 'The Godfather', 1, 12.99, 12.99, 'pending'),
+    (3, 3, 'The Dark Knight', 3, 14.99, 44.97, 'completed')
 ON CONFLICT DO NOTHING;
 EOF
 

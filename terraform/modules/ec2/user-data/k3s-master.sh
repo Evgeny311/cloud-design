@@ -44,6 +44,13 @@ systemctl enable docker
 systemctl start docker
 usermod -aG docker ec2-user
 
+# Install PostgreSQL 14 client for database initialization
+echo "[$(date)] Installing PostgreSQL 14 client..."
+amazon-linux-extras enable postgresql14
+yum install -y postgresql || {
+    echo "[$(date)] Failed to install PostgreSQL client"
+}
+
 # Install AWS CLI v2
 echo "Installing AWS CLI v2..."
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
